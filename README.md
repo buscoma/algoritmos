@@ -1,2 +1,1 @@
-# algoritmos
-Implementación de algoritmos comunes en Python
+# Implementación de algoritmos comunes en Python
