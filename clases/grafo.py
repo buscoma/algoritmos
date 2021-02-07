@@ -83,12 +83,12 @@ class GrafoListaAdyacentes(Grafo):
 		while verticeAuxiliar != None:
 			actualArista, _ = self.__buscarArista(verticeAuxiliar, actualVertice)
 			if actualArista:
-				if not self.dirigido:
-					self.eliminarArista(actualVertice.valor, verticeAuxiliar.valor)	
+				#if not self.dirigido:
+				#	self.eliminarArista(actualVertice.valor, verticeAuxiliar.valor)	
 				self.eliminarArista(verticeAuxiliar.valor, actualVertice.valor)
 			verticeAuxiliar = verticeAuxiliar.siguienteVertice
 		if not anteriorVertice:
-			primerVertice = primerVertice.siguienteVertice
+			self.primerVertice = primerVertice.siguienteVertice
 		else:
 			anteriorVertice.siguienteVertice = actualVertice.siguienteVertice
 	def vertices(self):
@@ -109,20 +109,17 @@ class GrafoListaAdyacentes(Grafo):
 	def eliminarArista(self, valorVerticeOrigen, valorVerticeDestino):
 		verticeOrigen, _ = self.__buscarVertice(valorVerticeOrigen)
 		verticeDestino, _ = self.__buscarVertice(valorVerticeDestino)
-
 		if not self.dirigido:
 			actualArista, anteriorArista = self.__buscarArista(verticeDestino, verticeOrigen)
-			if actualArista:
-				if not anteriorArista:
-					verticeDestino.primerArista = verticeDestino.primerArista.siguienteArista
-				else:
-					anteriorArista.siguienteArista = actualArista.siguienteArista
-		actualArista, anteriorArista = self.__buscarArista(verticeOrigen, verticeDestino)
-		if actualArista:
 			if not anteriorArista:
-				verticeOrigen.primerArista = verticeOrigen.primerArista.siguienteArista
+				verticeDestino.primerArista = verticeDestino.primerArista.siguienteArista
 			else:
 				anteriorArista.siguienteArista = actualArista.siguienteArista
+		actualArista, anteriorArista = self.__buscarArista(verticeOrigen, verticeDestino)
+		if not anteriorArista:
+			verticeOrigen.primerArista = verticeOrigen.primerArista.siguienteArista
+		else:
+			anteriorArista.siguienteArista = actualArista.siguienteArista
 	def existeArista(self, verticeOrigen, verticeDestino):
 		verticeOrigen, _ = self.__buscarVertice(verticeOrigen)
 		verticeDestino, _ = self.__buscarVertice(verticeDestino)
@@ -173,30 +170,30 @@ class GrafoMatrizAdyacencia(Grafo):
 	def agregarVertice(self, valor):
 		self.vertices+=[valor]
 	def eliminarVertice(self, valor):
-		self.vertices.remove(valor)
 		for otroVertice in self.vertices:
-			self.eliminarArista(valor, otroVertice) if self.existeArista(valor, otroVertice) else None
-			self.eliminarArista(otroVertice, valor) if self.existeArista(otroVertice, valor) else None
+			if self.existeArista(valor, otroVertice):
+				self.eliminarArista(valor, otroVertice)
+			elif self.existeArista(otroVertice, valor):
+				self.eliminarArista(otroVertice, valor)
+		self.vertices.remove(valor)
 	def vertices(self):
 		return self.vertices
 	def agregarArista(self, valorVerticeOrigen, valorVerticeDestino, peso):
-		if (valorVerticeOrigen, valorVerticeDestino) not in self.aristas:
-			self.aristas.append((valorVerticeOrigen, valorVerticeDestino))
 		if not self.dirigido:
-			self.matriz.update({(valorVerticeOrigen, valorVerticeDestino): peso})
+			self.aristas.append((valorVerticeDestino, valorVerticeOrigen))
 			self.matriz.update({(valorVerticeDestino, valorVerticeOrigen): peso})
-			if (valorVerticeDestino, valorVerticeOrigen) not in self.aristas:
-				self.aristas.append((valorVerticeDestino, valorVerticeOrigen))
-		else:
-			self.matriz.update({(valorVerticeOrigen, valorVerticeDestino): peso})
+		self.aristas.append((valorVerticeOrigen, valorVerticeDestino))
+		self.matriz.update({(valorVerticeOrigen, valorVerticeDestino): peso})
 	def eliminarArista(self, valorVerticeOrigen, valorVerticeDestino):
-		self.aristas.remove((valorVerticeOrigen, valorVerticeDestino))
-		del self.matriz[(valorVerticeOrigen, valorVerticeDestino)]
 		if not self.dirigido:
+			self.matriz.update({(valorVerticeDestino, valorVerticeOrigen): 0})
 			self.aristas.remove((valorVerticeDestino, valorVerticeOrigen))
 			del self.matriz[(valorVerticeDestino, valorVerticeOrigen)]
+		self.matriz.update({(valorVerticeOrigen, valorVerticeDestino): 0})
+		self.aristas.remove((valorVerticeOrigen, valorVerticeDestino))
+		del self.matriz[(valorVerticeOrigen, valorVerticeDestino)]
 	def existeArista(self, valorVerticeOrigen, valorVerticeDestino):
-		return (valorVerticeOrigen, valorVerticeDestino) in self.vertices
+		return (valorVerticeOrigen, valorVerticeDestino) in self.aristas
 	def pesoArista(self, valorVerticeOrigen, valorVerticeDestino):
 		return self.matriz.get((valorVerticeOrigen, valorVerticeDestino))
 	def mostrar(self):
