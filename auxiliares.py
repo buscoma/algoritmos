@@ -25,30 +25,27 @@ def mostrarDFS(resultado:dict):
 	padres = list(resultado.values())
 	padres_origen = list(set([vertice for vertice in padres if vertice not in hijos and vertice]))
 	for padre in padres_origen:
-		hijo = hijoDe(padre)
+		hijosDePadre = [h for h in hijos if resultado[h] == padre]
 		print(f"[{padre}] ", end="")
-		while hijo:
+		for hijo in hijosDePadre:
 			print(f"==> [{hijo}] ", end="")
 			hijo = hijoDe(hijo)
 		print("")
 
-def mostrarBFS(resultado:dict):
-	def printHijos(padre, lvl):
+def mostrar(resultado:dict):
+	def printHijos(padre):
 		hijosDePadre = [h for h in hijos if resultado[h] == padre]
-		separador="\t"
 		if hijosDePadre:
-			print(f"{separador*lvl}<[{padre}]>")
-			if hijosDePadre:
-				print(f"{separador*(lvl+1)}", end="")
+			print(f"<[{padre}]> ⭆", end="")
 			for hijo in hijosDePadre:
-				print(f"[{hijo}]", end="")
+				print(f" [{hijo}]", end="")
 			print("")
 			for hijo in hijosDePadre:
-				printHijos(hijo, lvl+1)
+				printHijos(hijo)
 	hijos = [h for h in list(resultado.keys()) if resultado.get(h)]
 	padres = list(resultado.values())
 	padres_origen = list(set([vertice for vertice in padres if vertice not in hijos and vertice]))
 	for padre in padres_origen:
-		printHijos(padre, 0)
+		printHijos(padre)
 
 
