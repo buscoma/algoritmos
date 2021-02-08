@@ -1,4 +1,3 @@
-#!python3
 class Grafo:
 	"""
 	Clase abstracta Grafo // No implementar
@@ -12,23 +11,23 @@ class Grafo:
 	def eliminarVertice(self, valor:int) -> None:
 		"""
 		Descripción: Elimina vértice del grafo
-		Precondición: El vertice debe existir previamente en el grafo
+		Precondición: El vértice debe existir previamente en el grafo
 		"""
 		pass
 	def vertices(self) -> list:
 		"""
-		Descripción: Devuelve una lista con los vertices del grafo
+		Descripción: Devuelve una lista con los vértices del grafo
 		"""
 		pass
 	def agregarArista(self, valorVerticeOrigen:int, valorVerticeDestino:int, peso:int) -> None:
 		"""
-		Descripción: Agrega una arista entre ambos vertices
+		Descripción: Agrega una arista entre ambos vértices
 		Precondición: Ambos vértices deben existir y la arista no debe existir
 		"""
 		pass
 	def eliminarArista(self, valorVerticeOrigen:int, valorVerticeDestino:int) -> None:
 		"""
-		Descripción: Elimina la arista entre ambos vertices
+		Descripción: Elimina la arista entre ambos vértices
 		Precondición: La arista debe existir
 		"""
 		pass
@@ -51,9 +50,14 @@ class Grafo:
 		pass
 	def pertenece(self, valor:int) -> bool:
 		"""
-		Descripción: Valida la existencia de un vertice en el grafo
+		Descripción: Valida la existencia de un vértice en el grafo
 		"""
 		pass
+	def adyacentes(self, valorVertice:int) -> list:
+		"""
+		Descripción: Devuelve una lista con los vértices adyacentes al vértice dado
+		Precondición: El vértice debe existir en el grafo
+		"""
 class NodoVertice:
 	def __init__(self, valor:int = None, siguienteVertice:'NodoVertice' = None, siguienteArista:'NodoArista' = None):
 		self.valor = valor
@@ -83,12 +87,10 @@ class GrafoListaAdyacentes(Grafo):
 		while verticeAuxiliar != None:
 			actualArista, _ = self.__buscarArista(verticeAuxiliar, actualVertice)
 			if actualArista:
-				#if not self.dirigido:
-				#	self.eliminarArista(actualVertice.valor, verticeAuxiliar.valor)	
 				self.eliminarArista(verticeAuxiliar.valor, actualVertice.valor)
 			verticeAuxiliar = verticeAuxiliar.siguienteVertice
 		if not anteriorVertice:
-			self.primerVertice = primerVertice.siguienteVertice
+			self.primerVertice = self.primerVertice.siguienteVertice
 		else:
 			anteriorVertice.siguienteVertice = actualVertice.siguienteVertice
 	def vertices(self):
@@ -144,6 +146,13 @@ class GrafoListaAdyacentes(Grafo):
 	def pertenece(self, valor):
 		vertice, _ = self.__buscarVertice(valor)
 		return vertice is not None
+	def adyacentes(self, valorVertice):
+		adyacentes = list()
+		arista = self.__buscarVertice(valorVertice)[0].primerArista
+		while arista:
+			adyacentes.append(arista.verticeDestino.valor)
+			arista = arista.siguienteArista
+		return adyacentes
 	def __buscarVertice(self, valor:int):
 		# Método privado
 		actualVertice = self.primerVertice
@@ -207,54 +216,12 @@ class GrafoMatrizAdyacencia(Grafo):
 			print(matriz)
 	def pertenece(self, valor):
 		return valor in self.vertices
-
-def demo():
-	def popular(g):
-		g.agregarVertice(1)
-		g.agregarVertice(2)
-		g.agregarVertice(3)
-		g.agregarArista(1,2,5)
-		g.agregarArista(2,3,4)
-		g.agregarArista(1,3,6)
-	g1 = GrafoListaAdyacentes(dirigido = True)
-	g2 = GrafoMatrizAdyacencia(dirigido = True)
-	g3 = GrafoListaAdyacentes(dirigido = False)
-	g4 = GrafoMatrizAdyacencia(dirigido = False)
-	popular(g1)
-	popular(g2)
-	popular(g3)
-	popular(g4)
-	return g1, g2, g3, g4
-
-if __name__ == "__main__":
-	gListaDir, gMatrizDir, gListaNoDir, gMatrizNoDir = demo()
-	print("Grafo dirigido con lista de adyacentes:")
-	gListaDir.mostrar()
-	print("Grafo dirigido con matriz de adyacencia:")
-	gMatrizDir.mostrar()
-	print("Grafo no dirigido con lista de adyacentes:")
-	gListaNoDir.mostrar()
-	print("Grafo no dirigido con matriz de adyacencia:")
-	gMatrizNoDir.mostrar()
-
-"""
-$ python3 grafo.py
-Grafo dirigido con lista de adyacentes:
-[3]>>
-[2]>> --4-->[3]
-[1]>> --6-->[3] --5-->[2]
-Grafo dirigido con matriz de adyacencia:
-        [1]     [2]     [3]
-[1]     0       5       6
-[2]     0       0       4
-[3]     0       0       0
-Grafo no dirigido con lista de adyacentes:
-[3]>> --6--[1] --4--[2]
-[2]>> --4--[3] --5--[1]
-[1]>> --6--[3] --5--[2]
-Grafo no dirigido con matriz de adyacencia:
-        [1]     [2]     [3]
-[1]     0       5       6
-[2]     5       0       4
-[3]     6       4       0
-"""
+	def adyacentes(self, valorVertice):
+		adyacentes = list()
+		for otroVertice in [v for v in self.vertices if v != valorVertice]:
+			if not self.dirigido and (otroVertice, valorVertice) in self.aristas:
+				adyacentes.append(otroVertice)
+			elif (valorVertice, otroVertice) in self.aristas:
+				adyacentes.append(otroVertice)
+		return list(adyacentes)
+		
