@@ -9,8 +9,8 @@ Para la demostración de los algoritmos utilizo clases que arme para no definir 
 ## Algoritmos implementados
  - [x] [Breadth-First Search (BFS) y BFS Forest](https://github.com/buscoma/algoritmos/blob/main/algoritmos/algoritmoBFS.py)
  - [x] [Depth-First Search (DFS) y DFS Forest](https://github.com/buscoma/algoritmos/blob/main/algoritmos/algoritmoDFS.py)
- - [] Prim
- - [] Kruskal
+ - [ ] Prim
+ - [ ] Kruskal
  - [x] [Dijkstra](https://github.com/buscoma/algoritmos/blob/main/algoritmos/algoritmoDijkstra.py)
- - [] Floyd
+ - [ ] Floyd
 
