@@ -1,4 +1,4 @@
-from clases import Grafo
+from clases.grafo import Grafo
 
 def popular(grafo:Grafo):
 	for v in range(6,0,-1):

@@ -1,4 +1,4 @@
-from clases import Grafo
+from clases.grafo import Grafo
 
 marca = dict()
 
