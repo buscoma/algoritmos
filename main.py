@@ -1,4 +1,4 @@
-#python3!
+#!python3
 
 from clases.grafo import GrafoListaAdyacentes, GrafoMatrizAdyacencia
 from algoritmos import dfs, dfs_forest, bfs, bfs_forest, dijkstra
