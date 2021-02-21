@@ -172,21 +172,21 @@ class GrafoListaAdyacentes(Grafo):
 
 class GrafoMatrizAdyacencia(Grafo):
 	def __init__(self, dirigido:bool = True):
-		self.vertices = list()
+		self.verticesGrafo = list()
 		self.aristas = list()
 		self.matriz = dict()
 		self.dirigido = dirigido
 	def agregarVertice(self, valor):
-		self.vertices+=[valor]
+		self.verticesGrafo+=[valor]
 	def eliminarVertice(self, valor):
-		for otroVertice in self.vertices:
+		for otroVertice in self.verticesGrafo:
 			if self.existeArista(valor, otroVertice):
 				self.eliminarArista(valor, otroVertice)
 			elif self.existeArista(otroVertice, valor):
 				self.eliminarArista(otroVertice, valor)
-		self.vertices.remove(valor)
+		self.verticesGrafo.remove(valor)
 	def vertices(self):
-		return self.vertices
+		return self.verticesGrafo
 	def agregarArista(self, valorVerticeOrigen, valorVerticeDestino, peso):
 		if not self.dirigido:
 			self.aristas.append((valorVerticeDestino, valorVerticeOrigen))
@@ -206,19 +206,19 @@ class GrafoMatrizAdyacencia(Grafo):
 	def pesoArista(self, valorVerticeOrigen, valorVerticeDestino):
 		return self.matriz.get((valorVerticeOrigen, valorVerticeDestino))
 	def mostrar(self):
-		for v in self.vertices:
+		for v in self.verticesGrafo:
 			print(f"\t[{v}]", end="")
 		print("")
-		for verticeAuxiliar1 in self.vertices:
+		for verticeAuxiliar1 in self.verticesGrafo:
 			matriz = f"[{verticeAuxiliar1}]\t"
-			for verticeAuxiliar2 in self.vertices:
+			for verticeAuxiliar2 in self.verticesGrafo:
 				matriz+=f"{self.matriz.get((verticeAuxiliar1, verticeAuxiliar2), 0)}\t"
 			print(matriz)
 	def pertenece(self, valor):
-		return valor in self.vertices
+		return valor in self.verticesGrafo
 	def adyacentes(self, valorVertice):
 		adyacentes = list()
-		for otroVertice in [v for v in self.vertices if v != valorVertice]:
+		for otroVertice in [v for v in self.verticesGrafo if v != valorVertice]:
 			if not self.dirigido and (otroVertice, valorVertice) in self.aristas:
 				adyacentes.append(otroVertice)
 			elif (valorVertice, otroVertice) in self.aristas:
